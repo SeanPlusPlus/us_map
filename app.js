@@ -9,7 +9,7 @@ $( document ).ready(function() {
   }
 
   var url = "/data.json";
-  var jqxhr = $.get(url , function(response) {
+  $.get(url , function(response) {
     var states = response.states.map(getStates).join(''),
       dc = getDc(response.dc),
       usa = states + dc;
