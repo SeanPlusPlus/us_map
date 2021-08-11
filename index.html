@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <title>US MAP</title>
+    <style>
+      #us-map{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      path:hover, circle:hover {
+        stroke: #002868 !important;
+        stroke-width:2px;
+        stroke-linejoin: round;
+        fill: #002868 !important;
+        cursor: pointer;
+      }
+      path#CA {
+        stroke: red !important;
+        stroke-width:2px;
+        stroke-linejoin: round;
+        fill: red !important;
+        cursor: pointer;
+      }
+      #path67 {
+        fill: none !important;
+        stroke: #A9A9A9 !important;
+        cursor: default;
+      }
+      #info-box {
+        display: none;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 1;
+        background-color: #ffffff;
+        border: 2px solid #BF0A30;
+        border-radius: 5px;
+        padding: 5px;
+        font-family: arial;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="info-box"></div>
+    <svg xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="us-map" preserveAspectRatio="xMinYMin meet" sodipodi:docname="Republican_Party_presidential_primaries_results,_2016.svg" inkscape:version="0.91 r13725" x="0px" y="0px" width="959px" height="593px" viewBox="174 100 959 593" enable-background="new 174 100 959 593" xml:space="preserve">
+      <sodipodi:namedview bordercolor="#666666" objecttolerance="10" pagecolor="#ffffff" borderopacity="1" gridtolerance="10" guidetolerance="10" inkscape:cx="509.19152" inkscape:cy="282.2353" inkscape:zoom="1.2137643" showgrid="false" id="namedview71" inkscape:current-layer="g5" inkscape:window-maximized="1" inkscape:window-y="-8" inkscape:window-x="-8" inkscape:pageopacity="0" inkscape:window-height="1017" inkscape:window-width="1920" inkscape:pageshadow="2">
+      </sodipodi:namedview>
+      <g id="usa">
+      </g>
+      <path id="path67" fill="none" stroke="#A9A9A9" stroke-width="2" d="M385,593v55l36,45 M174,525h144l67,68h86l53,54v46"/>
+    </svg>
+    <script>
+      var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if(ios) {
+        $('a').on('click touchend', function() { 
+          var link = $(this).attr('href'); 
+          window.open(link,'_blank');
+          return false;
+        });
+      }
+
+      var url = "/data.json";
+      var jqxhr = $.get(url , function(response) {
+        var states = response.states.map(getStates).join(''),
+          dc = getDc(response.dc),
+          usa = states + dc;
+        $("#usa").html(usa);
+      })
+      .done(function() {
+        $("path, circle").hover(function(e) {
+          $('#info-box').css('display','block');
+          $('#info-box').html($(this).data('info'));
+        });
+
+        $("path, circle").mouseleave(function(e) {
+          $('#info-box').css('display','none');
+        });
+
+        $(document).mousemove(function(e) {
+          $('#info-box').css('top',e.pageY-$('#info-box').height()-30);
+          $('#info-box').css('left',e.pageX-($('#info-box').width())/2);
+        }).mouseover();
+
+      })
+
+      function getStates(data) {
+        return `<path id="${data.id}" data-info="${data.data}" fill="${data.fill}" d="${data.d}" />`
+      }
+
+      function getDc(data) {
+        var path = data.path,
+          circle = data.circle;
+
+        return `
+          <g id="DC">
+            <path id="${path.id}" fill="${path.fill}" d="${path.d}"/>
+            <circle
+              id="${circle.id}"
+              data-info="${circle.data}"
+              fill="${circle.fill}"
+              stroke="${circle.stroke}"
+              stroke-width="${circle.stroke_width}"
+              cx="${circle.cx}"
+              cy="${circle.cy}"
+              r="${circle.r}"
+            />
+          </g>
+        `;
+      }
+    </script>
+  </body>
+</html>
