@@ -48,7 +48,11 @@ $( document ).ready(function() {
 
     return `
       <g id="DC">
-        <path id="${path.id}" fill="${path.fill}" d="${path.d}"/>
+        <path
+          id="${path.id}"
+          fill="${path.fill}"
+          d="${path.d}
+        "/>
         <circle
           id="${circle.id}"
           data-info="${circle.data.name}"
