@@ -33,7 +33,13 @@ $( document ).ready(function() {
   })
 
   function getStates(data) {
-    return `<path id="${data.id}" data-info="${data.data}" fill="${data.fill}" d="${data.d}" />`
+    var data_info = `<div>${data.data.name} [ Capital: ${data.data.capital} ]</div>`;
+    return `<path
+              id="${data.id}"
+              data-info="${data_info}"
+              fill="${data.fill}"
+              d="${data.d}"
+            />`
   }
 
   function getDc(data) {
@@ -45,7 +51,7 @@ $( document ).ready(function() {
         <path id="${path.id}" fill="${path.fill}" d="${path.d}"/>
         <circle
           id="${circle.id}"
-          data-info="${circle.data}"
+          data-info="${circle.data.name}"
           fill="${circle.fill}"
           stroke="${circle.stroke}"
           stroke-width="${circle.stroke_width}"
