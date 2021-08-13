@@ -14,8 +14,14 @@ $( document ).ready(function() {
       dc = getDc(response.dc),
       usa = states + dc;
     $("#usa").html(usa);
+    return usa;
   })
-  .done(function() {
+  .done(function(usa) {
+    var states = {};
+    _.each(usa.states, function(state) {
+      states[state.id] = state.data
+    });
+
     $("path, circle").hover(function(e) {
       $('#info-box').css('display','block');
       $('#info-box').html($(this).data('info'));
@@ -23,6 +29,14 @@ $( document ).ready(function() {
 
     $("path, circle").mouseleave(function(e) {
       $('#info-box').css('display','none');
+    });
+
+    $("path, circle").click(function(e) {
+      var id = e.target.id;
+      var state = states[id];
+      var html = `<div>${state.name} [ ${state.capital} ]</div>`
+      console.log(html);
+      $('#info-box').html(html);
     });
 
     $(document).mousemove(function(e) {
@@ -33,7 +47,7 @@ $( document ).ready(function() {
   })
 
   function getStates(data) {
-    var data_info = `<div>${data.data.name} [ Capital: ${data.data.capital} ]</div>`;
+    var data_info = `<div>${data.data.name}</div>`;
     return `<path
               id="${data.id}"
               data-info="${data_info}"
