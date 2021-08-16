@@ -35,7 +35,6 @@ $( document ).ready(function() {
       var id = e.target.id;
       var state = states[id];
       var html = `<div>${state.name} [ ${state.capital} ]</div>`
-      console.log(html);
       $('#info-box').html(html);
     });
 
@@ -48,10 +47,11 @@ $( document ).ready(function() {
 
   function getStates(data) {
     var data_info = `<div>${data.data.name}</div>`;
+    var fill = isActive(data.data.name) ? '#007bff' : data.fill;
     return `<path
               id="${data.id}"
               data-info="${data_info}"
-              fill="${data.fill}"
+              fill="${fill}"
               d="${data.d}"
             />`
   }
@@ -79,5 +79,10 @@ $( document ).ready(function() {
         />
       </g>
     `;
+  }
+
+  function isActive(state) {
+    var active = ['California', 'Ohio', 'Texas']
+    return _.includes(active, state);
   }
 });
