@@ -1,4 +1,5 @@
 $( document ).ready(function() {
+  var NOT_ACTIVE_MESSAGE = 'No data';
   var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if(ios) {
     $('a').on('click touchend', function() { 
@@ -19,7 +20,10 @@ $( document ).ready(function() {
   .done(function(usa) {
     var states = {};
     _.each(usa.states, function(state) {
-      states[state.id] = state.data
+      states[state.id] = {
+        data: state.data,
+        isActive: isActive(state.data.name)
+      }
     });
 
     $("path, circle").hover(function(e) {
@@ -34,8 +38,15 @@ $( document ).ready(function() {
     $("path, circle").click(function(e) {
       var id = e.target.id;
       var state = states[id];
-      var html = `<div>${state.name} [ ${state.capital} ]</div>`
-      $('#info-box').html(html);
+
+      if (!state.isActive) {
+        var data = state.data;
+        var html = `<div>${data.name}: ${NOT_ACTIVE_MESSAGE}</div>`;
+        $('#info-box').html(html);
+        return;
+      }
+
+      handleActive(state);
     });
 
     $(document).mousemove(function(e) {
@@ -84,5 +95,9 @@ $( document ).ready(function() {
   function isActive(state) {
     var active = ['California', 'Ohio', 'Texas']
     return _.includes(active, state);
+  }
+
+  function handleActive(state) {
+    console.log(state);
   }
 });
